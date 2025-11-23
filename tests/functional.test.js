@@ -1,5 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+
+// ==========================
+// Browsing Component Tests
+// ==========================
 import Browsing from '../src/components/pages/Browsing.vue'
 
 describe('Browsing Component Tests', () => {
@@ -56,4 +60,21 @@ describe('Browsing Component Tests', () => {
     })
   })
 
+})
+
+// ==========================
+// HeaderBar Component Tests
+// ==========================
+import HeaderBar from '../src/components/common/HeaderBar.vue'
+
+describe('HeaderBar.vue', () => {
+  it('renders properly', () => {
+    const wrapper = mount(HeaderBar)
+    expect(wrapper.exists()).toBe(true)
+  })
+
+  it('has a logo', () => {
+    const wrapper = mount(HeaderBar)
+    expect(wrapper.find('img').exists()).toBe(true)
+  })
 })
