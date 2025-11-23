@@ -119,3 +119,4 @@ describe('HeaderBar.vue - Full Coverage', () => {
     expect(wrapper.classes()).toContain('dark')
   })
 })
+ 
