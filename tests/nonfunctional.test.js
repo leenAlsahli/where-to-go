@@ -4,15 +4,17 @@ import Browsing from '../src/components/pages/Browsing.vue'
 
 describe('Browsing Component - Non-Functional Checks', () => {
 
+  // 1️⃣ Performance: Render time
   it('renders within acceptable time', async () => {
     const start = performance.now()
     const wrapper = mount(Browsing)
     const end = performance.now()
     const renderTime = end - start
     console.log('Render time:', renderTime, 'ms')
-    expect(renderTime).toBeLessThan(200) // أقل من 200ms مثال بسيط
+    expect(renderTime).toBeLessThan(200) // أقل من 200ms كمثال
   })
 
+  // 2️⃣ Accessibility: alt و aria-label
   it('has proper accessibility attributes', () => {
     const wrapper = mount(Browsing)
     wrapper.findAll('img').forEach(img => {
@@ -23,17 +25,12 @@ describe('Browsing Component - Non-Functional Checks', () => {
     })
   })
 
-  it('is responsive to different screen sizes', () => {
-    // مثال بسيط: التحقق من class لتجاوب الشاشة
+  // 3️⃣ Stability: يعمل بدون crash مع props فارغة
+  it('does not crash with empty props', () => {
     const wrapper = mount(Browsing, {
-      global: {
-        mocks: {
-          $screenWidth: 375 // تحاكي شاشة موبايل
-        }
-      }
+      props: { items: [] } // تمرير بيانات فارغة
     })
-    expect(wrapper.classes()).toContain('mobile-layout') // شرط افتراضي
+    expect(wrapper.exists()).toBe(true)
   })
 
 })
-

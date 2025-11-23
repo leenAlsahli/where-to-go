@@ -27,6 +27,7 @@
 </template>
 
 <script>
+
 import HeaderBar from '@/components/common/HeaderBar.vue';
 
 import food from '@/assets/food.png';
@@ -81,7 +82,10 @@ export default {
   }
   }
 };
+
+
 </script>
+
 
 
 <style scoped>
