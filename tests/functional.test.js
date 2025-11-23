@@ -14,6 +14,7 @@ const router = createRouter({
     { path: '/profile', name: 'Profile' },
     { path: '/booking-details', name: 'BookingDetails' },
     { path: '/browsing', name: 'Browsing' },
+    { path: '/event-details/:id', name: 'EventDetails' },
   ],
 })
 router.push = mockPush
@@ -22,6 +23,7 @@ router.push = mockPush
 // Browsing Component Full Coverage
 // ==========================
 describe('Browsing Component - Full Coverage', () => {
+
   it('renders without crashing', () => {
     const wrapper = mount(Browsing, { global: { plugins: [router] } })
     expect(wrapper.exists()).toBe(true)
@@ -44,12 +46,38 @@ describe('Browsing Component - Full Coverage', () => {
       expect(wrapper.vm.formatCategory(key)).toBe(map[key])
     })
   })
+
+  it('back arrow should exist and clickable', async () => {
+    const mockRouter = { go: vi.fn() }
+    const wrapper = mount(Browsing, {
+      global: { mocks: { $router: mockRouter } }
+    })
+    const backArrow = wrapper.find('.back-arrow')
+    expect(backArrow.exists()).toBe(true)
+    await backArrow.trigger('click')
+    expect(mockRouter.go).toHaveBeenCalledWith(-1)
+  })
+
+  it('goToDetails calls router.push with correct params', () => {
+    const mockRouter = { push: vi.fn() }
+    const wrapper = mount(Browsing, {
+      global: { mocks: { $router: mockRouter } }
+    })
+    const testEvent = { id: 123, title: 'Test Event' }
+    wrapper.vm.goToDetails(testEvent)
+    expect(mockRouter.push).toHaveBeenCalledWith({
+      name: 'EventDetails',
+      params: { id: 123 },
+      query: { data: JSON.stringify(testEvent) }
+    })
+  })
 })
 
 // ==========================
 // HeaderBar Component Full Coverage
 // ==========================
 describe('HeaderBar.vue - Full Coverage', () => {
+
   it('renders without crashing', () => {
     const wrapper = mount(HeaderBar, { global: { plugins: [router] } })
     expect(wrapper.exists()).toBe(true)
