@@ -43,15 +43,42 @@
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">Email</label>
-          <input id="email" type="email" v-model="email" required placeholder="you@example.com" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input id="password" type="password" v-model="password" required placeholder="Enter your password" />
-        </div>
+  <input
+    type=" email"
+    id="email"
+    v-model="email"
+    placeholder="Enter your email"
+    required
+  />
+</div>
+
+<div class="password-wrapper">
+  <label for="password">Password</label>
+  <input
+    :type="showPassword ? 'text' : 'password'"
+    id="password"
+    v-model="password"
+    required
+    placeholder="Enter your password"
+  />
+  <span class="toggle-eye" @click="showPassword = !showPassword">
+    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.38 21.38 0 0 1 5.06-5.94"></path>
+      <path d="M1 1l22 22"></path>
+      <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24"></path>
+    </svg>
+  </span>
+</div>
+
         <button :disabled="loading" type="submit">
           {{ loading ? "Logging in..." : "Sign in" }}
         </button>
+          <div v-if="emailError" class="error-message">{{ emailError }}</div>
+
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 <div class="footer-links">
 <router-link to="/forgot-password">Forgot password?</router-link>
@@ -118,9 +145,11 @@ export default {
       mood: '',
       moodMessage: '',
       email: '',
+          emailError: '',
       password: '',
       loading: false,
-      errorMessage: ''
+      errorMessage: '',
+       showPassword: false,
     };
   },
   computed: {
@@ -165,19 +194,45 @@ export default {
       this.moodMessage = messages[m];
     },
 
-    handleLogin() {
-      this.loading = true;
-      this.errorMessage = '';
-      const validEmails = ['drnouf@gmail.com','saraAlaid@gmail.com', 'user@example.com', 'aljuri@gmail.com' , 'deema@gmail.com','ghada@gmail.com', 'danah@gmail.com','yamam@gmail.com','noor@gmail.com'];
-      if (validEmails.includes(this.email) && this.password === '12345678') {
-        sessionStorage.setItem('userId', 'fake-id-001');
-        sessionStorage.setItem('userName', 'Someone');
-        this.$router.push('/home');
-      } else {
-        this.errorMessage = 'Invalid email or password.';
-      }
-      this.loading = false;
-    }
+handleLogin() {
+  this.loading = true;
+
+  // Reset errors
+  this.errorMessage = '';
+  this.emailError = '';
+
+  // Email validation pattern
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(this.email)) {
+    this.emailError = 'Please enter a valid email address.';
+    this.loading = false;
+    return; 
+  }
+
+  if (this.password.length < 8) {
+    this.errorMessage = 'Password must be at least 8 characters.';
+    this.loading = false;
+    return;
+  }
+
+  const validEmails = [
+    'drnouf@gmail.com','saraAlaid@gmail.com','user@example.com',
+    'aljuri@gmail.com','deema@gmail.com','ghada@gmail.com',
+    'yamam@gmail.com','hessa@gmail.com','leen@gmail.com','drEbtsam@gmail.com'
+  ];
+
+  if (validEmails.includes(this.email) && this.password === '12345678') {
+    sessionStorage.setItem('userId', 'fake-id-001');
+    sessionStorage.setItem('userName', 'Someone');
+    this.$router.push('/home');
+  } else {
+    this.errorMessage = 'Invalid email or password.';
+  }
+
+  this.loading = false;
+}
+
   }
 };
 </script>
@@ -570,6 +625,70 @@ button:disabled {
 .login-wrapper.neutral .blur-card {
   background: rgba(5, 20, 40, 0.6); /* كحلي */
   color: white;
+}
+.password-wrapper {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 14px 40px 14px 14px; /* مساحة كافية للعين على اليمين */
+  font-size: 15px;
+  line-height: 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left; /* كلمة Password على اليسار */
+  box-sizing: border-box;
+}
+
+.toggle-eye {
+    position: absolute;
+  top: 70%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;   /* حجم الأيقونة */
+  height: 24px;
+}
+
+.toggle-eye svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.password-wrapper label {
+  display: block;
+  text-align: left; /* يخلي كلمة Password على اليمين */
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+}
+.form-group label {
+  display: block;
+  text-align: left; /* مثل الباسوورد */
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f9f9f9;
+  font-size: 15px;
+  color: #2c3e50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left; /* نص داخل input على اليسار */
+  box-sizing: border-box;
 }
 
 </style> 
