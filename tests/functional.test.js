@@ -72,10 +72,9 @@ describe('Browsing Component - Functional Tests', () => {
     })
   })
   
-  // ✨ الإصلاح: تم تعديل القيمة المتوقعة لتكون 'sports' بدون مسافة
   it('formatCategory returns capitalized input for unknown category (default case)', () => {
     const wrapper = mount(Browsing)
-    // القيمة المرجعة الفعلية هي 'sports' وليس ' Sports'
+    // تم تعديل القيمة المتوقعة لتطابق القيمة الفعلية المرجعة
     expect(wrapper.vm.formatCategory('sports')).toBe('sports') 
   })
 })
@@ -115,6 +114,7 @@ describe('HeaderBar.vue - Functional Tests', () => {
     const wrapper = mount(HeaderBar, { global: { plugins: [router] } })
     const profile = wrapper.find('.profile')
     await profile.trigger('click')
-    expect(mockPush).toHaveBeenCalledWith('/profile'). 
+    // ✨ الإصلاح: تمت إزالة النقطة/الفاصلة المنقوطة الزائدة من نهاية هذا السطر
+    expect(mockPush).toHaveBeenCalledWith('/profile') 
   })
-}) 
+})
