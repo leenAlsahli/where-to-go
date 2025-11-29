@@ -117,4 +117,4 @@ describe('HeaderBar.vue - Functional Tests', () => {
     await profile.trigger('click')
     expect(mockPush).toHaveBeenCalledWith('/profile'). 
   })
-})
+}) 
