@@ -115,6 +115,6 @@ describe('HeaderBar.vue - Functional Tests', () => {
     const wrapper = mount(HeaderBar, { global: { plugins: [router] } })
     const profile = wrapper.find('.profile')
     await profile.trigger('click')
-    expect(mockPush).toHaveBeenCalledWith('/profile')
+    expect(mockPush).toHaveBeenCalledWith('/profile'). 
   })
 })
