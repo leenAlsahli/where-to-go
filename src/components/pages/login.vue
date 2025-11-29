@@ -48,7 +48,7 @@
     id="email"
     v-model="email"
     placeholder="Enter your email"
-    required
+    
   />
 </div>
 
@@ -58,7 +58,7 @@
     :type="showPassword ? 'text' : 'password'"
     id="password"
     v-model="password"
-    required
+    
     placeholder="Enter your password"
   />
   <span class="toggle-eye" @click="showPassword = !showPassword">
@@ -78,7 +78,6 @@
           {{ loading ? "Logging in..." : "Sign in" }}
         </button>
           <div v-if="emailError" class="error-message">{{ emailError }}</div>
-
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 <div class="footer-links">
 <router-link to="/forgot-password">Forgot password?</router-link>
@@ -193,35 +192,32 @@ export default {
       };
       this.moodMessage = messages[m];
     },
-
 handleLogin() {
   this.loading = true;
-
-  // Reset errors
   this.errorMessage = '';
   this.emailError = '';
-
-  // Email validation pattern
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailPattern.test(this.email)) {
+  if (!this.email) {
+    this.emailError = 'Email is required.';
+    this.loading = false;
+    return;
+  }  if (!emailPattern.test(this.email)) {
     this.emailError = 'Please enter a valid email address.';
     this.loading = false;
-    return; 
-  }
-
-  if (this.password.length < 8) {
+    return;
+  }  if (!this.password) {
+    this.errorMessage = 'Password is required.';
+    this.loading = false;
+    return;
+  } if (this.password.length < 8) {
     this.errorMessage = 'Password must be at least 8 characters.';
     this.loading = false;
     return;
-  }
-
-  const validEmails = [
+  }const validEmails = [
     'drnouf@gmail.com','saraAlaid@gmail.com','user@example.com',
     'aljuri@gmail.com','deema@gmail.com','ghada@gmail.com',
     'yamam@gmail.com','hessa@gmail.com','leen@gmail.com','drEbtsam@gmail.com'
   ];
-
   if (validEmails.includes(this.email) && this.password === '12345678') {
     sessionStorage.setItem('userId', 'fake-id-001');
     sessionStorage.setItem('userName', 'Someone');
@@ -229,10 +225,8 @@ handleLogin() {
   } else {
     this.errorMessage = 'Invalid email or password.';
   }
-
   this.loading = false;
 }
-
   }
 };
 </script>
@@ -690,5 +684,6 @@ button:disabled {
   text-align: left; /* نص داخل input على اليسار */
   box-sizing: border-box;
 }
+
 
 </style> 

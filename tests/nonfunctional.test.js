@@ -1,28 +1,81 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Browsing from '../src/components/pages/Browsing.vue'
-describe('Browsing Component - Non-Functional Checks', () => {
-  it('renders within acceptable time', async () => {
+import HeaderBar from '../src/components/common/HeaderBar.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+
+// ==========================
+// إعداد Router وهمي (لتغذية المكونات التي تتطلب Router مثل HeaderBar)
+// ==========================
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/profile', name: 'Profile' },
+    { path: '/browsing', name: 'Browsing' },
+    // ... مسارات أخرى ...
+  ],
+})
+
+// ==========================
+// Browsing Component - Non-Functional Checks (Performance, Robustness)
+// ==========================
+describe('Browsing Component - Non-Functional Checks (Performance, Robustness)', () => {
+
+  // Test 1: Performance (Rendering Time)
+  it('renders within acceptable time (< 200ms)', async () => {
     const start = performance.now()
-    const wrapper = mount(Browsing)
+    mount(Browsing, { global: { plugins: [router] } }) // إضافة router هنا أيضاً
     const end = performance.now()
     const renderTime = end - start
-    console.log('Render time:', renderTime, 'ms')
-    expect(renderTime).toBeLessThan(200) // أقل من 200ms كمثال
+    expect(renderTime).toBeLessThan(200) 
   })
+
+  // Test 2: Robustness (No Crash with Empty Data) - تم تجاهل تحذير الـ props
+  it('does not crash with empty items data', () => {
+    const wrapper = mount(Browsing, {
+      props: { items: [] }, 
+      global: { plugins: [router] } // إضافة router
+    })
+    expect(wrapper.exists()).toBe(true)
+  })
+
+  // Test 3: Accessibility (ARIA/ALT attributes)
   it('has proper accessibility attributes', () => {
     const wrapper = mount(Browsing)
     wrapper.findAll('img').forEach(img => {
-      expect(img.attributes('alt')).toBeTruthy() // كل الصور لها alt
+      expect(img.attributes('alt')).toBeTruthy() 
     })
     wrapper.findAll('button').forEach(btn => {
-      expect(btn.attributes('aria-label')).toBeTruthy() // كل الأزرار لها aria-label
+      expect(btn.attributes('aria-label')).toBeTruthy() 
     })
   })
-  it('does not crash with empty props', () => {
-    const wrapper = mount(Browsing, {
-      props: { items: [] } // تمرير بيانات فارغة
+})
+
+// ==========================
+// HeaderBar Component - Non-Functional Checks (Mood Prop)
+// ==========================
+describe('HeaderBar.vue - Non-Functional Checks (Mood Prop)', () => {
+  
+  // Test 4: Usability/Style - تحقق من الوضع الداكن
+  it('renders in dark mode when mood prop is dark', () => {
+    const wrapper = mount(HeaderBar, { 
+      props: { mood: 'dark' },
+      global: { plugins: [router] } // ✨ الإصلاح: إضافة plugin
     })
-    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.classes()).toContain('dark')
+  })
+  
+  // Test 5: Usability/Style - تحقق من الوضع الافتراضي/الفاتح
+  it('renders in light mode when mood prop is not dark or absent', () => {
+    // حالة عدم تمرير الخاصية
+    const wrapperDefault = mount(HeaderBar, { global: { plugins: [router] } }) // ✨ الإصلاح: إضافة plugin
+    expect(wrapperDefault.classes()).not.toContain('dark')
+    
+    // حالة تمرير قيمة أخرى
+    const wrapperLight = mount(HeaderBar, { 
+      props: { mood: 'light' },
+      global: { plugins: [router] } // ✨ الإصلاح: إضافة plugin
+    })
+    expect(wrapperLight.classes()).not.toContain('dark')
   })
 })
