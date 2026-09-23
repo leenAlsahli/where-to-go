@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="assets/logo-light.png" alt="Where To Go Logo" width="240">
+  <img src="src/assets/logo-light.png" alt="Where To Go Logo" width="240">
 </p>
-
 
 A smart tourism web application designed to help users discover and book local events across Saudi Arabia based on their current mood.
 
