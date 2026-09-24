@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 
-import Login from '@/components/pages/Login.vue';
+import Login from "../components/pages/login.vue"
 import CreateAccount from '@/components/pages/CreateAccount.vue';
 import ForgotPassword from '@/components/pages/ForgotPassword.vue';
 
