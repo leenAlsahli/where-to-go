@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrapper" :class="mood">
- <video v-if="mood" autoplay muted loop playsinline class="bg-video">
+    <video v-if="mood" autoplay muted loop playsinline class="bg-video">
       <source :src="videoSrc" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -8,13 +8,12 @@
     <!-- Mood Overlay -->
     <div v-if="!mood" class="mood-overlay">
       <div class="mood-dialog">
-                <p v-if="!moodMessage" class="mood-hint">How do you feel like browsing today</p>
+        <p v-if="!moodMessage" class="mood-hint">How do you feel like browsing today</p>
         <p v-else class="mood-hint">{{ moodMessage }}</p>
         <div class="mood-options">
-          <button @click="selectMood('Light')"> Light Mood</button>
-          <button @click="selectMood('Dark')"> Dark Mood</button>
-          <button @click="selectMood('neutral')"> Neutral Mood</button>
-
+          <button @click="selectMood('Light')">Light Mood</button>
+          <button @click="selectMood('Dark')">Dark Mood</button>
+          <button @click="selectMood('neutral')">Neutral Mood</button>
         </div>
       </div>
     </div>
@@ -38,52 +37,62 @@
     <!-- Login Card -->
     <div class="login-card">
       <div class="logo-container">
-<img :src="logoSrc" alt="Logo" class="logo" />
+        <img :src="logoSrc" alt="Logo" class="logo" />
       </div>
-      <form @submit.prevent="handleLogin">
+
+      <form novalidate @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">Email</label>
-  <input
-    type=" email"
-    id="email"
-    v-model="email"
-    placeholder="Enter your email"
-    
-  />
-</div>
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            placeholder="Enter your email"
+          />
+        </div>
 
-<div class="password-wrapper">
-  <label for="password">Password</label>
-  <input
-    :type="showPassword ? 'text' : 'password'"
-    id="password"
-    v-model="password"
-    
-    placeholder="Enter your password"
-  />
-  <span class="toggle-eye" @click="showPassword = !showPassword">
-    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-      <circle cx="12" cy="12" r="3"></circle>
-    </svg>
-    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
-      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.38 21.38 0 0 1 5.06-5.94"></path>
-      <path d="M1 1l22 22"></path>
-      <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24"></path>
-    </svg>
-  </span>
-</div>
+        <div class="password-wrapper">
+          <label for="password">Password</label>
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            v-model="password"
+            placeholder="Enter your password"
+          />
+          <span class="toggle-eye" @click="showPassword = !showPassword">
+            <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
+              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.38 21.38 0 0 1 5.06-5.94"></path>
+              <path d="M1 1l22 22"></path>
+              <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24"></path>
+            </svg>
+          </span>
+        </div>
 
         <button :disabled="loading" type="submit">
           {{ loading ? "Logging in..." : "Sign in" }}
         </button>
-          <div v-if="emailError" class="error-message">{{ emailError }}</div>
+
+        <div v-if="emailError" class="error-message">{{ emailError }}</div>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-<div class="footer-links">
-<router-link to="/forgot-password">Forgot password?</router-link>
-  <span>•</span>
-  <router-link to="/create-account">Create account</router-link>
-</div>
+
+        <!-- Demo Account -->
+        <div class="demo-box">
+          <p class="demo-title">Demo account</p>
+          <p class="demo-creds">{{ demoAccount.email }} / {{ demoAccount.password }}</p>
+          <button type="button" class="demo-btn" @click="fillDemo">
+            Use demo account
+          </button>
+        </div>
+
+        <div class="footer-links">
+          <router-link to="/forgot-password">Forgot password?</router-link>
+          <span>•</span>
+          <router-link to="/create-account">Create account</router-link>
+        </div>
       </form>
     </div>
 
@@ -99,75 +108,83 @@
       </div>
     </div>
   </div>
-<section class="contact-section" :class="mood">
-  <div class="contact-container">
-    <h2>Let's Connect</h2>
-    <p class="subheading">Have questions or suggestions? We're just a message away.</p>
 
-    <div class="contact-info-grid">
-      <div class="contact-box">
-        <i class="fas fa-envelope"></i>
-        <h4>Email</h4>
-        <p>support@wheretogo.com</p>
-      </div>
-      <div class="contact-box">
-        <i class="fas fa-phone-alt"></i>
-        <h4>Phone</h4>
-        <p>+966-555-123456</p>
-      </div>
-      <div class="contact-box">
-        <i class="fas fa-map-marker-alt"></i>
-        <h4>Address</h4>
-        <p>Riyadh, Saudi Arabia</p>
+  <section class="contact-section" :class="mood">
+    <div class="contact-container">
+      <h2>Let's Connect</h2>
+      <p class="subheading">Have questions or suggestions? We're just a message away.</p>
+
+      <div class="contact-info-grid">
+        <div class="contact-box">
+          <i class="fas fa-envelope"></i>
+          <h4>Email</h4>
+          <p>support@wheretogo.com</p>
+        </div>
+        <div class="contact-box">
+          <i class="fas fa-phone-alt"></i>
+          <h4>Phone</h4>
+          <p>+966-555-123456</p>
+        </div>
+        <div class="contact-box">
+          <i class="fas fa-map-marker-alt"></i>
+          <h4>Address</h4>
+          <p>Riyadh, Saudi Arabia</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-<swiper
-  class="hero-carousel"
-  :loop="true"
-  :autoplay="{ delay: 4000 }"
-  :pagination="{ clickable: true }"
->
-  <swiper-slide v-for="(slide, index) in slides" :key="index">
-    <img :src="slide" alt="Event banner" class="hero-image" />
-  </swiper-slide>
-</swiper>
+  </section>
 
-
+  <swiper
+    class="hero-carousel"
+    :loop="true"
+    :autoplay="{ delay: 4000 }"
+    :pagination="{ clickable: true }"
+  >
+    <swiper-slide v-for="(slide, index) in slides" :key="index">
+      <img :src="slide" alt="Event banner" class="hero-image" />
+    </swiper-slide>
+  </swiper>
 </template>
 
 <script>
+const DEMO_ACCOUNT = {
+  email: 'demo@wheretogo.com',
+  password: '12345678',
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default {
   data() {
     return {
       mood: '',
       moodMessage: '',
       email: '',
-          emailError: '',
+      emailError: '',
       password: '',
       loading: false,
       errorMessage: '',
-       showPassword: false,
+      showPassword: false,
+      demoAccount: DEMO_ACCOUNT,
     };
   },
+
   computed: {
     logoSrc() {
       if (this.mood === 'Light') return new URL('@/assets/logo-light.png', import.meta.url).href;
       if (this.mood === 'Dark') return new URL('@/assets/logo-dark.png', import.meta.url).href;
-      if (this.mood === 'neutral') return new URL('@/assets/logo.png', import.meta.url).href;
       return new URL('@/assets/logo.png', import.meta.url).href;
     },
     videoSrc() {
       return new URL('@/assets/alulaa.mp4', import.meta.url).href;
-    }
+    },
   },
+
   created() {
     const savedMood = sessionStorage.getItem('userMood');
     const savedTime = sessionStorage.getItem('moodTimestamp');
-    const now = Date.now();
 
-    if (!savedMood || !savedTime || now - parseInt(savedTime) > 60000) {
+    if (!savedMood || !savedTime || Date.now() - parseInt(savedTime) > 60000) {
       sessionStorage.removeItem('userMood');
       sessionStorage.removeItem('moodTimestamp');
       this.mood = '';
@@ -176,6 +193,7 @@ export default {
       this.setMoodMessage(savedMood);
     }
   },
+
   methods: {
     selectMood(m) {
       this.mood = m;
@@ -186,59 +204,65 @@ export default {
 
     setMoodMessage(m) {
       const messages = {
-        Light: "Bright and breezy — for when you want your screen to feel like daylight.",
-        Dark: "Less glare, more focus. Dark mode wraps your experience in calm and clarity.",
-        neutral: "Soft tones and earthy vibes. Natural mode feels like a breath of fresh air."
+        Light: 'Bright and breezy — for when you want your screen to feel like daylight.',
+        Dark: 'Less glare, more focus. Dark mode wraps your experience in calm and clarity.',
+        neutral: 'Soft tones and earthy vibes. Natural mode feels like a breath of fresh air.',
       };
       this.moodMessage = messages[m];
     },
-handleLogin() {
-  this.loading = true;
-  this.errorMessage = '';
-  this.emailError = '';
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!this.email) {
-    this.emailError = 'Email is required.';
-    this.loading = false;
-    return;
-  }  if (!emailPattern.test(this.email)) {
-    this.emailError = 'Please enter a valid email address.';
-    this.loading = false;
-    return;
-  }  if (!this.password) {
-    this.errorMessage = 'Password is required.';
-    this.loading = false;
-    return;
-  } if (this.password.length < 8) {
-    this.errorMessage = 'Password must be at least 8 characters.';
-    this.loading = false;
-    return;
-  }const validEmails = [
-    'drnouf@gmail.com','saraAlaid@gmail.com','user@example.com',
-    'aljuri@gmail.com','deema@gmail.com','ghada@gmail.com',
-    'yamam@gmail.com','hessa@gmail.com','leen@gmail.com','drEbtsam@gmail.com'
-  ];
-  if (validEmails.includes(this.email) && this.password === '12345678') {
-    sessionStorage.setItem('userId', 'fake-id-001');
-    sessionStorage.setItem('userName', 'Someone');
-    this.$router.push('/home');
-  } else {
-    this.errorMessage = 'Invalid email or password.';
-  }
-  this.loading = false;
-}
-  }
+
+    fillDemo() {
+      this.email = DEMO_ACCOUNT.email;
+      this.password = DEMO_ACCOUNT.password;
+      this.errorMessage = '';
+      this.emailError = '';
+    },
+
+    handleLogin() {
+      this.errorMessage = '';
+      this.emailError = '';
+
+      if (!this.email) {
+        this.emailError = 'Email is required.';
+        return;
+      }
+      if (!EMAIL_PATTERN.test(this.email)) {
+        this.emailError = 'Please enter a valid email address.';
+        return;
+      }
+      if (!this.password) {
+        this.errorMessage = 'Password is required.';
+        return;
+      }
+      if (this.password.length < 8) {
+        this.errorMessage = 'Password must be at least 8 characters.';
+        return;
+      }
+
+      this.loading = true;
+
+      const isDemo =
+        this.email === DEMO_ACCOUNT.email &&
+        this.password === DEMO_ACCOUNT.password;
+
+      if (isDemo) {
+        sessionStorage.setItem('userId', 'demo-user');
+        sessionStorage.setItem('userName', 'Demo User');
+        this.$router.push('/home');
+      } else {
+        this.errorMessage = 'Invalid email or password.';
+      }
+
+      this.loading = false;
+    },
+  },
 };
 </script>
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
-body {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-}
-
+/* ---------- Layout ---------- */
 .login-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -252,9 +276,20 @@ body {
   overflow: hidden;
 }
 
-/* Light Mode */
+.side-widget {
+  flex: 1;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 1;
+}
+
+/* ---------- Moods ---------- */
 .login-wrapper.Light {
-  background: transparent; /* <<< شفاف */
+  background: transparent;
   color: #4e433f;
 }
 .login-wrapper.Light .blur-card,
@@ -274,7 +309,6 @@ body {
   color: #bfae9c;
 }
 
-/* Dark Mode */
 .login-wrapper.Dark {
   background: transparent;
   color: white;
@@ -292,13 +326,12 @@ body {
   color: white !important;
 }
 
-/* Neutral Mode */
 .login-wrapper.neutral {
   background: transparent;
   color: white;
 }
 
-/* Mood overlay */
+/* ---------- Mood overlay ---------- */
 .mood-overlay {
   position: absolute;
   inset: 0;
@@ -334,7 +367,7 @@ body {
   padding: 12px 20px;
   border-radius: 12px;
   border: none;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.2);
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -343,10 +376,10 @@ body {
 }
 
 .mood-options button:hover {
-  background-color: rgba(255,255,255,0.4);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Video background */
+/* ---------- Video background ---------- */
 .bg-video {
   position: fixed;
   top: 0;
@@ -359,7 +392,7 @@ body {
   pointer-events: none;
 }
 
-/* Blur cards and login card */
+/* ---------- Blur cards ---------- */
 .blur-card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
@@ -377,11 +410,26 @@ body {
   background: rgba(255, 255, 255, 0.06);
   color: #2e2e2e;
 }
+
 .blur-card.natural {
   background: rgba(255, 255, 255, 0.06);
   color: white;
 }
 
+.login-wrapper.Light .blur-card {
+  background: rgba(255, 255, 255, 0.08);
+  color: #1c1c1c;
+}
+.login-wrapper.Dark .blur-card {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+}
+.login-wrapper.neutral .blur-card {
+  background: rgba(5, 20, 40, 0.6); /* navy */
+  color: white;
+}
+
+/* ---------- Login card ---------- */
 .login-card {
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(14px);
@@ -396,9 +444,17 @@ body {
   z-index: 2;
 }
 
-.login-content {
-  position: relative;
-  z-index: 1;
+.login-wrapper.Light .login-card {
+  background: rgba(255, 255, 255, 0.88);
+  color: #1c1c1c;
+}
+.login-wrapper.Dark .login-card {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+}
+.login-wrapper.neutral .login-card {
+  background: rgba(5, 20, 40, 0.75); /* navy */
+  color: white;
 }
 
 .logo-container {
@@ -412,12 +468,7 @@ body {
   filter: brightness(1.1);
 }
 
-.form-group {
-  text-align: left;
-  margin-bottom: 22px;
-  z-index: 2;
-}
-
+/* ---------- Form ---------- */
 label {
   display: block;
   margin-bottom: 8px;
@@ -443,6 +494,71 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(108, 142, 163, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+.form-group {
+  text-align: left;
+  margin-bottom: 22px;
+  z-index: 2;
+}
+
+.form-group label,
+.password-wrapper label {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f9f9f9;
+  font-size: 15px;
+  color: #2c3e50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.password-wrapper {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 14px 40px 14px 14px; /* room for the eye icon */
+  font-size: 15px;
+  line-height: 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.toggle-eye {
+  position: absolute;
+  top: 70%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.toggle-eye svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 button {
   width: 100%;
   padding: 14px;
@@ -461,7 +577,8 @@ button:disabled {
 }
 
 .error-message {
- color: #8B1E3F;  margin-top: 15px;
+  color: #8B1E3F;
+  margin-top: 15px;
   font-size: 14px;
 }
 
@@ -479,18 +596,36 @@ button:disabled {
   text-decoration: underline;
 }
 
-.side-widget {
-  flex: 1;
-  max-width: 240px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  z-index: 1;
+/* ---------- Demo account ---------- */
+.demo-box {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.12);
+  font-size: 13px;
 }
 
-/* Contact Section */
+.demo-title {
+  margin: 0 0 4px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.demo-creds {
+  margin: 0 0 10px;
+  font-family: monospace;
+}
+
+.login-wrapper .demo-box button.demo-btn {
+  padding: 8px;
+  font-size: 13px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  box-shadow: none;
+}
+
+/* ---------- Contact section ---------- */
 .contact-section {
   padding: 80px 20px 60px;
   text-align: center;
@@ -501,10 +636,7 @@ button:disabled {
   background: transparent;
   color: rgb(147, 119, 96);
 }
-.contact-section.Dark {
-  background: transparent;
-  color: white;
-}
+.contact-section.Dark,
 .contact-section.neutral {
   background: transparent;
   color: white;
@@ -554,136 +686,11 @@ button:disabled {
 }
 
 .contact-box h4 {
-  font-size: 18px;}
-  margin-bottom: 6px;
-
+  font-size: 18px;
+}
 
 .contact-box p {
   font-size: 14px;
   opacity: 0.85;
-}.login-card {
-  border-radius: 22px;
-  padding: 50px 40px;
-  max-width: 460px;
-  width: 100%;
-  backdrop-filter: blur(14px);
-  animation: fadeIn 1s ease;
-  text-align: center;
-  z-index: 2;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
 }
-
-/* Light Mood */
-.login-wrapper.Light .login-card {
-  background: rgba(255, 255, 255, 0.88);
-  color: #1c1c1c;
-}
-
-/* Dark Mood */
-.login-wrapper.Dark .login-card {
-  background: rgba(0, 0, 0, 0.75);
-  color: white;
-}
-
-/* Neutral Mood */
-.login-wrapper.neutral .login-card {
-  background: rgba(5, 20, 40, 0.75); /* كحلي */
-  color: white;
-}
-
-/* Blur cards default */
-.blur-card {
-  border-radius: 18px;
-  padding: 25px 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 100%;
-  backdrop-filter: blur(12px);
-}
-
-/* Light Mood blur-card */
-.login-wrapper.Light .blur-card {
-  background: rgba(255, 255, 255, 0.08);
-  color: #1c1c1c;
-}
-
-/* Dark Mood blur-card */
-.login-wrapper.Dark .blur-card {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-}
-
-/* Neutral Mood blur-card */
-.login-wrapper.neutral .blur-card {
-  background: rgba(5, 20, 40, 0.6); /* كحلي */
-  color: white;
-}
-.password-wrapper {
-  position: relative;
-  margin-bottom: 22px;
-}
-
-.password-wrapper input {
-  width: 100%;
-  padding: 14px 40px 14px 14px; /* مساحة كافية للعين على اليمين */
-  font-size: 15px;
-  line-height: 20px;
-  border-radius: 12px;
-  border: none;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  text-align: left; /* كلمة Password على اليسار */
-  box-sizing: border-box;
-}
-
-.toggle-eye {
-    position: absolute;
-  top: 70%;
-  right: 12px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;   /* حجم الأيقونة */
-  height: 24px;
-}
-
-.toggle-eye svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.password-wrapper label {
-  display: block;
-  text-align: left; /* يخلي كلمة Password على اليمين */
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333333;
-}
-.form-group label {
-  display: block;
-  text-align: left; /* مثل الباسوورد */
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333333;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background-color: #f9f9f9;
-  font-size: 15px;
-  color: #2c3e50;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  text-align: left; /* نص داخل input على اليسار */
-  box-sizing: border-box;
-}
-
-
-</style> 
+</style>
